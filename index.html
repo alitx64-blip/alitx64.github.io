@@ -1,382 +1,626 @@
-```html
 <!DOCTYPE html>
 <html lang="fr" class="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Face à Soi — Clarté Somatique</title>
-    <!-- Tailwind CSS pour l'affichage rapide et pro -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#000000',
-                        cardBg: '#09090b',
-                        borderBg: '#1f2937',
-                        accentRose: '#f43f5e',
-                        accentIndigo: '#6366f1'
-                    }
-                }
-            }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Face à Soi — Arrêt Conscient Somatique</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            gold: '#d4af37',
+            'gold-light': '#f3e5ab',
+            'black-deep': '#050505',
+          }
         }
-    </script>
-    <style>
-        body {
-            background-color: #000000;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
-        /* Animation du guide respiratoire (4s d'inspiration / 4s d'expiration) */
-        @keyframes breathe {
-            0%, 100% {
-                transform: scale(0.95);
-                background-color: rgba(244, 63, 94, 0.1);
-                box-shadow: 0 0 15px rgba(244, 63, 94, 0.05);
-            }
-            50% {
-                transform: scale(1.35);
-                background-color: rgba(244, 63, 94, 0.35);
-                box-shadow: 0 0 35px rgba(244, 63, 94, 0.25);
-            }
-        }
-        .breathe-ring {
-            animation: breathe 8s infinite ease-in-out;
-        }
-        /* Style personnalisé pour les zones de texte sur mobile pour éviter les zooms automatiques */
-        textarea {
-            font-size: 16px !important; /* Force la taille minimale de police sous iOS/Android pour bloquer le zoom */
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.15; filter: blur(50px); }
+      50% { transform: scale(1.15); opacity: 0.35; filter: blur(70px); }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 8s infinite ease-in-out;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scale(0.75); opacity: 0.25; }
+      50% { transform: scale(1.25); opacity: 0.75; }
+    }
+    .animate-breath {
+      animation: breathe 8s infinite ease-in-out;
+    }
+    /* Hide scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #333; }
+  </style>
 </head>
-<body class="text-zinc-100 min-h-screen flex items-center justify-center bg-black">
+<body class="bg-black text-zinc-100 min-h-screen font-sans overflow-x-hidden selection:bg-zinc-800 selection:text-white relative">
 
-    <!-- CONTENEUR PRINCIPAL DU SIMULATEUR DE SMARTPHONE -->
-    <div class="w-full max-w-md min-h-screen md:min-h-[820px] md:my-6 md:rounded-3xl md:border md:border-zinc-800 bg-black flex flex-col justify-between shadow-2xl overflow-hidden relative">
+  <!-- Ambient Light Effects -->
+  <div class="fixed top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-zinc-950/20 pointer-events-none animate-pulse-glow z-0"></div>
+  <div class="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-zinc-950/20 pointer-events-none animate-pulse-glow z-0" style="animation-delay: -4s;"></div>
+
+  <!-- App Wrapper -->
+  <div class="max-w-md mx-auto min-h-screen flex flex-col justify-between py-6 px-4 z-10 relative">
+    
+    <!-- Top Bar -->
+    <header class="flex items-center justify-between border-b border-zinc-900 pb-4 z-10">
+      <div class="flex items-center gap-2">
+        <div class="w-2.5 h-2.5 rounded-full bg-[#d4af37] animate-pulse"></div>
+        <span class="font-serif tracking-widest text-[11px] uppercase text-zinc-400 font-medium whitespace-nowrap">Face à Soi</span>
+      </div>
+      <button onclick="switchScreen('history')" class="text-[10px] uppercase tracking-wider text-zinc-500 hover:text-white transition flex items-center gap-1.5 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Journal d'Arrêt
+      </button>
+    </header>
+
+    <!-- MAIN VIEWS -->
+    <main class="flex-grow flex flex-col justify-center my-6">
+
+      <!-- SCREEN 1: HOME -->
+      <section id="screen-home" class="space-y-6 text-center">
+        <div class="space-y-3">
+          <h1 class="font-serif italic text-3.5xl text-zinc-200 tracking-tight leading-tight">L'anesthésie s'arrête ici.</h1>
+          <p class="text-[11px] text-zinc-400 max-w-xs mx-auto leading-relaxed font-light">
+            Sexe, écran, nourriture ou bouteille : dès que l'automatisme s'empare de vous pour anesthésier un mal, suspendez tout pendant 90 secondes.
+          </p>
+        </div>
+
+        <div class="flex justify-center py-4">
+          <button onclick="startTimer()" class="w-44 h-44 rounded-full border border-zinc-900 bg-zinc-950/80 hover:bg-zinc-900 hover:border-zinc-800 hover:scale-105 active:scale-95 transition-all duration-700 flex flex-col items-center justify-center gap-2 group relative shadow-2xl focus:outline-none cursor-pointer">
+            <span class="absolute inset-1.5 border border-dashed border-zinc-800 rounded-full group-hover:scale-102 transition duration-500"></span>
+            <div class="absolute -inset-1 rounded-full bg-zinc-500/5 blur-md opacity-30 group-hover:opacity-100 transition-all duration-700"></div>
+            
+            <div class="w-10 h-10 rounded-full bg-zinc-900 flex items-center justify-center text-zinc-400 group-hover:bg-zinc-100 group-hover:text-black transition-colors duration-550">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3" />
+              </svg>
+            </div>
+            <span class="text-[11px] font-semibold tracking-wider text-zinc-200 uppercase mt-1 group-hover:text-white transition">Lancer l'arrêt</span>
+            <span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">90 secondes</span>
+          </button>
+        </div>
+
+        <!-- Anesthetics list -->
+        <div class="space-y-2 border-t border-zinc-900/60 pt-4 text-left">
+          <p class="text-[9px] tracking-widest text-[#d4af37] font-mono uppercase text-center font-semibold">
+            Cibler l'anesthésiant réel :
+          </p>
+          <div class="grid grid-cols-2 gap-1.5 pt-1" id="escapism-grid">
+            <!-- Rendered by JS dynamically on startup -->
+          </div>
+        </div>
+
+        <div class="border-t border-zinc-950 pt-2 text-[10px] text-zinc-650 font-mono italic text-center">
+          "Ne cherchez pas à guérir, cherchez à ressentir."
+        </div>
+      </section>
+
+      <!-- SCREEN 2: TIMER -->
+      <section id="screen-timer" class="hidden text-center space-y-8">
+        <div class="space-y-1">
+          <p class="text-xs uppercase tracking-widest text-[#d4af37] font-semibold" id="timer-instruction">Inspirez amplement...</p>
+          <h2 class="text-xs text-zinc-400 font-light" id="timer-stage font-light">Le cercle s'élargit. Suivez le rythme.</h2>
+        </div>
+
+        <!-- Grand Timer Display -->
+        <div class="relative w-56 h-56 mx-auto flex items-center justify-center">
+          <!-- Central breathe guide: 4s expand / 4s contract (using CSS animation) -->
+          <div id="breath-circle" class="absolute inset-0 rounded-full border-2 border-[#d4af37]/45 shadow-[0_0_20px_rgba(212,175,55,0.2)] bg-zinc-950/20"></div>
+          <div class="absolute inset-5 rounded-full border border-dashed border-zinc-900"></div>
+          
+          <div class="z-10 space-y-1">
+            <span class="font-mono text-7xl font-light tracking-tighter text-white" id="timer-display">90</span>
+            <span class="block text-[9px] uppercase tracking-wider text-zinc-500">secondes</span>
+          </div>
+        </div>
+
+        <div class="max-w-[280px] mx-auto h-16 flex items-center justify-center">
+          <p class="text-xs text-zinc-500 italic leading-relaxed" id="quote-display">
+            "90 secondes est le temps biologiquement nécessaire pour qu’une émotion traverse son pic et retourne à l'état de repos."
+          </p>
+        </div>
+
+        <button onclick="skipTimer()" class="text-xs font-mono text-zinc-550 hover:text-zinc-300 underline tracking-wider pt-2 focus:outline-none cursor-pointer">
+          Sauter le timer →
+        </button>
+      </section>
+
+      <!-- SCREEN 3: FORM SANS FILTRE -->
+      <section id="screen-form" class="hidden space-y-5 text-left">
+        <div class="space-y-1">
+          <h2 class="font-serif italic text-2xl text-zinc-200">La Vérité Brute</h2>
+          <p class="text-[11px] text-zinc-400 font-light leading-normal">Ancrez l'expérience dans le corps pour défaire la dissociation. Répondez sincèrement :</p>
+        </div>
+
+        <div class="space-y-3.5">
+          <!-- Q1 -->
+          <div class="space-y-1">
+            <label class="block text-[9px] uppercase font-mono tracking-wider text-[#d4af37] font-semibold">
+              1. Quelle sensation physique je fuyais ?
+            </label>
+            <textarea id="input-sensation" placeholder="Ex : nœud à l'estomac, souffle court, crispation musculaire..." class="w-full h-14 bg-zinc-950 border border-zinc-900 rounded-lg p-2.5 text-xs text-zinc-200 focus:border-zinc-700 focus:outline-none placeholder:text-zinc-700 transition leading-normal resize-none"></textarea>
+          </div>
+
+          <!-- Q2 -->
+          <div class="space-y-1">
+            <label class="block text-[9px] uppercase font-mono tracking-wider text-[#d4af37] font-semibold">
+              2. Quelle émotion était là ?
+            </label>
+            <textarea id="input-emotion" placeholder="Ex : solitude, impuissance absolue, ennui abyssal, colère sourde..." class="w-full h-14 bg-zinc-950 border border-zinc-900 rounded-lg p-2.5 text-xs text-zinc-200 focus:border-zinc-700 focus:outline-none placeholder:text-zinc-700 transition leading-normal resize-none"></textarea>
+          </div>
+
+          <!-- Q3 -->
+          <div class="space-y-1">
+            <label class="block text-[9px] uppercase font-mono tracking-wider text-[#d4af37] font-semibold">
+              3. De quoi mon corps a besoin maintenant ?
+            </label>
+            <textarea id="input-need" placeholder="Ex : pleurer, s'allonger immobile, étirements, calme sensoriel..." class="w-full h-14 bg-zinc-950 border border-zinc-900 rounded-lg p-2.5 text-xs text-zinc-200 focus:border-zinc-700 focus:outline-none placeholder:text-zinc-700 transition leading-normal resize-none"></textarea>
+          </div>
+
+          <div class="flex gap-2 pt-2">
+            <button onclick="cancelSession()" class="py-2.5 px-3 border border-zinc-900 text-zinc-400 hover:text-white rounded-lg text-xs font-semibold uppercase tracking-wider transition focus:outline-none cursor-pointer">Annuler</button>
+            <button onclick="submitEmotion()" class="flex-grow py-2.5 bg-zinc-100 text-black hover:bg-white text-xs font-semibold uppercase tracking-widest rounded-lg transition duration-300 flex items-center justify-center gap-1.5 focus:outline-none cursor-pointer">
+              Enregistrer l'Arrêt
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: SYNTHESIS INTEGRATION -->
+      <section id="screen-synthesis" class="hidden space-y-4 text-left">
+        <div class="space-y-4">
+          <div class="text-center space-y-1.5 py-2 border-b border-zinc-900">
+            <span class="text-[9px] tracking-widest uppercase text-zinc-500 font-mono">Intégration de l'Arrêt</span>
+            <h2 class="font-serif italic text-2xl font-normal text-[#d4af37]">Vérité Établie</h2>
+          </div>
+
+          <!-- 3 Piliers Somatiques -->
+          <div class="space-y-2">
+            <div class="p-2.5 bg-zinc-950/60 border border-zinc-900 rounded-lg">
+              <span class="text-[8.5px] uppercase font-mono text-zinc-500 block leading-tight">1. Sensation fuyeuse</span>
+              <p id="synth-sensation" class="text-xs text-zinc-300 italic"></p>
+            </div>
+            <div class="p-2.5 bg-zinc-950/60 border border-zinc-900 rounded-lg">
+              <span class="text-[8.5px] uppercase font-mono text-zinc-500 block leading-tight">2. Émotion sous-jacente</span>
+              <p id="synth-emotion" class="text-xs text-zinc-300 italic"></p>
+            </div>
+            <div class="p-2.5 bg-zinc-950/60 border border-zinc-900 rounded-lg">
+              <span class="text-[8.5px] uppercase font-mono text-zinc-550 text-zinc-500 block leading-tight font-semibold">3. Réponse organique</span>
+              <p id="synth-need" class="text-xs text-[#d4af37] italic font-semibold"></p>
+            </div>
+          </div>
+
+          <!-- Escapes list -->
+          <div id="synth-escapes-container" class="space-y-1.5">
+            <span class="text-[9px] font-mono uppercase tracking-widest text-zinc-500 font-semibold block">● Fuites Désamorcées</span>
+            <div id="synth-escapes-chips" class="flex flex-wrap gap-1.5 py-1"></div>
+          </div>
+
+          <!-- Dynamic advices -->
+          <div id="synth-advices" class="space-y-3 max-h-[200px] overflow-y-auto pr-1"></div>
+
+          <button onclick="closeSynthesis()" class="w-full py-2.5 bg-zinc-100 text-black hover:bg-white text-xs font-semibold uppercase tracking-widest rounded-lg transition duration-300 flex items-center justify-center gap-2 focus:outline-none cursor-pointer">
+            Fermer la session
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: HISTORY LIST -->
+      <section id="screen-history" class="hidden space-y-6 text-left">
+        <div class="flex items-center justify-between border-b border-zinc-900 pb-3">
+          <div class="space-y-1">
+            <h2 class="font-serif italic text-2xl text-zinc-100">Journal d'Arrêt</h2>
+            <p class="text-[9px] text-zinc-500 font-mono tracking-wider uppercase font-medium">Automatismes désamorcés (<span id="history-count">0</span>)</p>
+          </div>
+          <button onclick="clearAllHistory()" class="text-[9px] font-mono text-red-500 hover:text-red-400 uppercase tracking-widest bg-red-950/15 py-1 px-2.5 rounded-md transition cursor-pointer">
+            Purger
+          </button>
+        </div>
+
+        <div id="history-list" class="space-y-3.5 max-h-[380px] overflow-y-auto pr-1">
+          <!-- Dyn list -->
+        </div>
+
+        <button onclick="switchScreen('home')" class="w-full py-2.5 border border-zinc-900 text-zinc-400 hover:text-white text-xs font-semibold uppercase tracking-widest rounded-lg transition focus:outline-none flex items-center justify-center gap-2 cursor-pointer">
+          ← Retour à l'accueil
+        </button>
+      </section>
+
+    </main>
+
+    <!-- App footer -->
+    <footer class="border-t border-zinc-950 pt-4 text-center z-10">
+      <p class="text-[8px] font-mono text-zinc-600 uppercase tracking-widest">
+        "Ce à quoi on face s'efface." — Présence Somatique
+      </p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Config and state
+    const escapismsList = [
+      "Sexe/Porno", "Alcool", "Boulimie", "Sport excessif", "Scroll infini", "Workaholisme", "Achats", "Colère/Conflit"
+    ];
+
+    const ESCAPISM_MAP = {
+      "Sexe/Porno": {
+        title: "Sexe / Pornographie",
+        explanation: "Recherche d'excitation extrême et de décharge rapide pour fuir une anxiété existentielle.",
+        advice: "Observez le vide ou l'ennui juste avant l'impulsion. L'immobilité consciente restaure la souveraineté du corps."
+      },
+      "Alcool": {
+        title: "Alcool",
+        explanation: "Recherche de coupure chimique pour engourdir le système nerveux central face à un fardeau ou un deuil.",
+        advice: "Accueillez l'inconfort à l'état brut. Prendre trois respirations ventrales lentes est un premier pas de reconnexion."
+      },
+      "Boulimie": {
+        title: "Remplissage / Boulimie",
+        explanation: "Tentative d'ingestion massive pour combler mécaniquement un vide affectif abyssal, une détresse.",
+        advice: "Distinguez la faim de la bouche d'avec la faim du cœur. Autorisez-vous à ressentir le creux de la poitrine."
+      },
+      "Sport excessif": {
+        title: "Sport excessif / Épuisement",
+        explanation: "Fuite active par la fatigue pour saturer la conscience et s'éviter d'observer le vide.",
+        advice: "L'immobilité complète demande parfois plus de courage qu'un marathon. Demeurez silencieux et sans action."
+      },
+      "Scroll infini": {
+        title: "Scroll infini / Écrans",
+        explanation: "Frénésie de stimulation cognitive dopaminergique pour s'absenter mentalement de l'instant présent.",
+        advice: "Le fait de poser le téléphone coupe le flux d'anesthésie numérique. Laissez l'ennui remonter."
+      },
+      "Workaholisme": {
+        title: "Suractivité / Travail",
+        explanation: "Recherche de validation sociale extérieure et de sentiment de contrôle pour s'éviter le repos.",
+        advice: "S'arrêter sans but lucratif est une libération. Vous avez de la valeur dans la simple présence."
+      },
+      "Achats": {
+        title: "Achats impulsifs",
+        explanation: "Acquisition compulsive d'objets pour stimuler temporairement un sentiment d'excitation.",
+        advice: "La nouveauté matérielle est un pansement éphémère. Le véritable soulagement réside dans l'attention."
+      },
+      "Colère/Conflit": {
+        title: "Colère / Conflit",
+        explanation: "Projection agressive vers l'extérieur pour transférer et décharger l'insupportable tension interne.",
+        advice: "Conservez l'énergie de la colère en vous plutôt que de la jeter. Observez sa chaleur physique dans le thorax."
+      }
+    };
+
+    let state = {
+      currentScreen: 'home',
+      timer: 90,
+      timerInterval: null,
+      selectedEscapes: [],
+      sensationText: '',
+      emotionText: '',
+      needText: '',
+      history: []
+    };
+
+    const quotes = [
+      "90 secondes est le temps biologiquement nécessaire pour qu’une émotion traverse son pic et retourne à l'état de repos.",
+      "Le fardeau de notre évitement nous épuise bien plus que l'émotion en elle-même.",
+      "Anesthésier sa peine, c'est aussi anesthésier sa joie. Éteindre le signal ne guérit pas le corps.",
+      "Ce à quoi on fait face s'efface. La résistance perpétue l'engourdissement sédimenté.",
+      "La pulsion est un signal corporel mal interprété. Offrez-lui du recul et du souffle."
+    ];
+
+    // Navigation
+    function switchScreen(screenId) {
+      if (screenId !== 'timer' && state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+
+      document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+      const target = document.getElementById('screen-' + screenId);
+      if (target) target.classList.remove('hidden');
+
+      state.currentScreen = screenId;
+
+      if (screenId === 'history') {
+        renderHistory();
+      }
+    }
+
+    // Toggle items
+    function toggleEscape(name) {
+      const idx = state.selectedEscapes.indexOf(name);
+      if (idx > -1) {
+        state.selectedEscapes.splice(idx, 1);
+      } else {
+        state.selectedEscapes.push(name);
+      }
+      renderEscapesHome();
+    }
+
+    function renderEscapesHome() {
+      const parent = document.getElementById('escapism-grid');
+      parent.innerHTML = '';
+      escapismsList.forEach(name => {
+        const active = state.selectedEscapes.includes(name);
+        const btn = document.createElement('button');
+        btn.onclick = () => toggleEscape(name);
+        btn.className = `flex items-center justify-between px-3 py-2 rounded-lg border text-[10px] font-mono transition duration-200 text-left focus:outline-none cursor-pointer ${
+          active 
+            ? 'bg-zinc-100 border-white text-black font-semibold shadow-md' 
+            : 'bg-zinc-950 border-zinc-900 text-zinc-400 hover:border-zinc-800'
+        }`;
+        btn.innerHTML = `
+          <span>${name}</span>
+          ${active ? '<span class="text-xs">✕</span>' : ''}
+        `;
+        parent.appendChild(btn);
+      });
+    }
+
+    // Initial setup
+    document.addEventListener("DOMContentLoaded", () => {
+      try {
+        const stored = localStorage.getItem('face_soi_vibrations');
+        if (stored) {
+          state.history = JSON.parse(stored);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      renderEscapesHome();
+    });
+
+    // Time controllers
+    function startTimer() {
+      switchScreen('timer');
+      state.timer = 90;
+      updateTimerDisplay();
+      
+      const bCircle = document.getElementById('breath-circle');
+      if (bCircle) {
+        bCircle.className = "absolute inset-0 rounded-full border-2 border-[#d4af37]/45 shadow-[0_0_20px_rgba(212,175,55,0.2)] bg-zinc-950/20 animate-breath";
+      }
+
+      let quoteCounter = 0;
+
+      state.timerInterval = setInterval(() => {
+        state.timer--;
+        updateTimerDisplay();
+
+        const cycleTime = state.timer % 8;
+        if (cycleTime === 0) {
+          document.getElementById('timer-instruction').innerText = "Inspirez amplement...";
+          document.getElementById('timer-instruction').classList.add('text-[#d4af37]');
+        } else if (cycleTime === 4) {
+          document.getElementById('timer-instruction').innerText = "Expirez lentement, relâchez...";
+          document.getElementById('timer-instruction').classList.remove('text-[#d4af37]');
+        }
+
+        if (state.timer > 0 && state.timer % 15 === 0) {
+          quoteCounter = (quoteCounter + 1) % quotes.length;
+          document.getElementById('quote-display').innerText = '"' + quotes[quoteCounter] + '"';
+        }
+
+        if (state.timer <= 0) {
+          clearInterval(state.timerInterval);
+          state.timerInterval = null;
+          timerCompleted();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      document.getElementById('timer-display').innerText = state.timer;
+    }
+
+    function skipTimer() {
+      timerCompleted();
+    }
+
+    function timerCompleted() {
+      document.getElementById('input-sensation').value = "";
+      document.getElementById('input-emotion').value = "";
+      document.getElementById('input-need').value = "";
+      switchScreen('form');
+    }
+
+    function cancelSession() {
+      state.selectedEscapes = [];
+      renderEscapesHome();
+      switchScreen('home');
+    }
+
+    function submitEmotion() {
+      state.sensationText = document.getElementById('input-sensation').value.trim() || 'Non spécifiée.';
+      state.emotionText = document.getElementById('input-emotion').value.trim() || 'Non spécifiée.';
+      state.needText = document.getElementById('input-need').value.trim() || 'Non spécifié.';
+
+      // Record
+      const newRecord = {
+        id: 'rec_' + Date.now(),
+        timestamp: new Date().toISOString(),
+        duration: 90 - state.timer,
+        sensationText: state.sensationText,
+        emotionText: state.emotionText,
+        needText: state.needText,
+        escapisms: [...state.selectedEscapes]
+      };
+
+      state.history.unshift(newRecord);
+      try {
+        localStorage.setItem('face_soi_vibrations', JSON.stringify(state.history));
+      } catch (err) {
+        console.error(err);
+      }
+
+      // Display in synthesis screen
+      document.getElementById('synth-sensation').innerText = '"' + state.sensationText + '"';
+      document.getElementById('synth-emotion').innerText = '"' + state.emotionText + '"';
+      document.getElementById('synth-need').innerText = '"' + state.needText + '"';
+      
+      // Render active escaped chips
+      const chipsCont = document.getElementById('synth-escapes-chips');
+      chipsCont.innerHTML = '';
+      if (newRecord.escapisms.length > 0) {
+        document.getElementById('synth-escapes-container').classList.remove('hidden');
+        newRecord.escapisms.forEach(esc => {
+          const chip = document.createElement('span');
+          chip.className = "text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-[#d4af37]";
+          chip.innerText = esc;
+          chipsCont.appendChild(chip);
+        });
+      } else {
+        document.getElementById('synth-escapes-container').classList.add('hidden');
+      }
+
+      // Advice cards
+      const advicesCont = document.getElementById('synth-advices');
+      advicesCont.innerHTML = '';
+      const selectedAdvices = newRecord.escapisms.length > 0 
+        ? newRecord.escapisms.map(esc => ESCAPISM_MAP[esc]).filter(Boolean)
+        : [{ title: "Présence Pure", explanation: "Arrêt sans évitement identifié.", advice: "Restez simplement là. Votre corps se recharge dans le silence de l'action suspendue." }];
+
+      selectedAdvices.forEach(adv => {
+        const div = document.createElement('div');
+        div.className = "space-y-1 bg-zinc-950/50 p-2.5 rounded-lg border border-zinc-900/60 text-[11px]";
+        div.innerHTML = `
+          <h4 class="font-mono text-[#d4af37] font-bold uppercase text-[10px]">● &nbsp;${adv.title}</h4>
+          <p class="text-zinc-400 font-light leading-normal"><strong class="text-zinc-500">Observation :</strong> ${adv.explanation}</p>
+          <div class="text-zinc-300 leading-relaxed border-t border-zinc-900/80 pt-1.5 mt-1.5 italic font-sans">"${adv.advice}"</div>
+        `;
+        advicesCont.appendChild(div);
+      });
+
+      switchScreen('synthesis');
+    }
+
+    function closeSynthesis() {
+      state.selectedEscapes = [];
+      renderEscapesHome();
+      switchScreen('home');
+    }
+
+    // Render History list
+    function renderHistory() {
+      const parent = document.getElementById('history-list');
+      parent.innerHTML = '';
+      document.getElementById('history-count').innerText = state.history.length;
+
+      if (state.history.length === 0) {
+        parent.innerHTML = `
+          <div class="text-center py-12 text-zinc-650 font-mono text-xs border border-dashed border-zinc-900 rounded-lg">
+            "Le journal est vierge d'arrêts."
+          </div>
+        `;
+        return;
+      }
+
+      state.history.forEach(rec => {
+        const date = new Date(rec.timestamp).toLocaleDateString("fr-FR", {
+          day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+
+        const activeAdvices = rec.escapisms && rec.escapisms.length > 0 
+          ? rec.escapisms.map(esc => ESCAPISM_MAP[esc]).filter(Boolean)
+          : null;
+
+        const card = document.createElement('div');
+        card.className = "bg-zinc-950 border border-zinc-900 rounded-lg p-3.5 space-y-3 relative hover:border-zinc-800 transition text-[11px]";
         
-        <!-- EN-TÊTE -->
-        <header class="p-5 border-b border-zinc-900 bg-zinc-950 flex justify-between items-center z-10">
-            <div class="flex items-center space-x-2">
-                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
-                <h1 class="text-base font-black tracking-wider uppercase text-zinc-200">Face à Soi</h1>
+        let somaticContent = '';
+        if (rec.sensationText) {
+          somaticContent = `
+            <div class="space-y-2 text-xs border-l-2 border-zinc-850 pl-2">
+              <div>
+                <span class="text-[8.5px] font-mono uppercase text-zinc-500 block leading-tight">1. Sensation</span>
+                <p class="italic text-zinc-300">"${rec.sensationText}"</p>
+              </div>
+              <div>
+                <span class="text-[8.5px] font-mono uppercase text-zinc-500 block leading-tight">2. Émotion</span>
+                <p class="italic text-zinc-300">"${rec.emotionText}"</p>
+              </div>
+              <div>
+                <span class="text-[8.5px] font-mono uppercase text-[#d4af37] block leading-tight">3. Besoin physique</span>
+                <p class="italic text-[#d4af37]">"${rec.needText}"</p>
+              </div>
             </div>
-            <span class="text-[10px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded font-mono">REGULATION</span>
-        </header>
-
-        <!-- ZONE DE CONTENU PRINCIPAL DYNAMIQUE -->
-        <main class="flex-1 p-5 overflow-y-auto space-y-6">
-
-            <!-- ================= ÉCRAN 1 : ACCUEIL ================= -->
-            <section id="screen-home" class="space-y-6">
-                <!-- Bouton de crise principal -->
-                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 text-center space-y-4">
-                    <h2 class="text-lg font-bold text-zinc-100">Pulsion d'évitement active ?</h2>
-                    <p class="text-zinc-400 text-xs leading-relaxed max-w-xs mx-auto">
-                        Offrez à votre système nerveux un sas de décompression de 90 secondes avant d'agir.
-                    </p>
-                    <button onclick="startRescue()" class="w-full py-4.5 bg-rose-600 active:bg-rose-700 text-white rounded-xl font-extrabold text-lg transition duration-150 transform active:scale-95 shadow-lg shadow-rose-950/40">
-                        Lancer l'arrêt (90s)
-                    </button>
-                </div>
-
-                <!-- Grille des anesthésiants sans curseurs -->
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Moyens anesthésiants</h3>
-                        <span class="text-[10px] text-zinc-600 italic">Cliquez pour comprendre</span>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-2" id="anesth-grid">
-                        <!-- Généré en JavaScript pour plus de clarté -->
-                    </div>
-
-                    <!-- Fiche explicative d'évitement neuro-somatique -->
-                    <div id="explanation-card" class="hidden bg-zinc-950 border border-rose-900/30 p-4 rounded-xl transition-all duration-300">
-                        <div class="flex justify-between items-start mb-1.5">
-                            <span id="explanation-title" class="text-xs font-black uppercase tracking-wider text-rose-400">Titre</span>
-                            <button onclick="closeExplanation()" class="text-zinc-500 hover:text-zinc-300 text-lg font-bold leading-none">&times;</button>
-                        </div>
-                        <p id="explanation-body" class="text-xs text-zinc-300 leading-relaxed"></p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= ÉCRAN 2 : CHRONOMÈTRE DE 90 SECONDES ================= -->
-            <section id="screen-rescue" class="hidden flex flex-col items-center justify-center py-8 space-y-8 text-center">
-                <div class="space-y-2">
-                    <h2 class="text-lg font-bold text-zinc-200">Surfez la vague d'adrénaline</h2>
-                    <p class="text-xs text-zinc-500 max-w-xs leading-relaxed">
-                        Physiologiquement, l'impulsion dure 90 secondes. Ancrez-vous et laissez le pic émotionnel s'éteindre.
-                    </p>
-                </div>
-
-                <!-- Onde respiratoire centrale -->
-                <div class="relative w-48 h-48 flex items-center justify-center">
-                    <div class="absolute w-32 h-32 rounded-full breathe-ring"></div>
-                    <div class="relative z-10 flex flex-col items-center">
-                        <span id="timer-number" class="text-5xl font-black text-rose-500 tracking-tighter">90</span>
-                        <span id="breathe-prompt" class="text-[9px] uppercase font-bold text-zinc-400 tracking-widest mt-1">Inspirez</span>
-                    </div>
-                </div>
-
-                <div class="bg-zinc-950 border border-zinc-900 p-4 rounded-xl max-w-xs">
-                    <p class="text-xs text-zinc-400 italic">
-                        "Relâchez la mâchoire et les épaules. Suivez simplement le mouvement du cercle."
-                    </p>
-                </div>
-            </section>
-
-            <!-- ================= ÉCRAN 3 : JOURNAL SOMATIQUE ================= -->
-            <section id="screen-journal" class="hidden space-y-5">
-                <div class="border-b border-zinc-900 pb-2">
-                    <h2 class="text-lg font-bold text-zinc-100">Le calme est revenu.</h2>
-                    <p class="text-xs text-rose-500 font-medium">Votre corps a passé le pic de stress. Consignez la vérité.</p>
-                </div>
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
-                            1. Quelle sensation physique essayais-tu de fuir ?
-                        </label>
-                        <textarea id="somatic-q1" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Gorge serrée, boule au ventre, envie de fuite, vide physique..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
-                            2. Quelle était l'émotion réelle cachée dessous ?
-                        </label>
-                        <textarea id="somatic-q2" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Colère étouffée, solitude, peur de l'échec, fatigue excessive..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
-                            3. De quoi ton corps a-t-il besoin maintenant ?
-                        </label>
-                        <textarea id="somatic-q3" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Se reposer, s'isoler, s'étirer, boire un verre d'eau..."></textarea>
-                    </div>
-
-                    <button onclick="saveSomaticLog()" class="w-full py-3.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl font-bold text-sm transition duration-150 transform active:scale-95 shadow-md shadow-indigo-950/50">
-                        Consigner l'intégration
-                    </button>
-                </div>
-            </section>
-
-            <!-- ================= HISTORIQUE LOCAL ET SÉCURISÉ ================= -->
-            <section id="section-history" class="space-y-3 pt-4 border-t border-zinc-900">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Journal d'intégration</h3>
-                    <button id="btn-purge" onclick="triggerPurgeModal()" class="text-[10px] text-zinc-600 hover:text-red-400 transition-colors hidden">
-                        Tout effacer
-                    </button>
-                </div>
-                
-                <div id="history-list" class="space-y-3">
-                    <!-- Généré dynamiquement -->
-                </div>
-            </section>
-
-        </main>
-
-        <!-- FOOTER SIMPLE -->
-        <footer class="p-4 bg-zinc-950 border-t border-zinc-900 text-center flex justify-between items-center z-10">
-            <span class="text-[10px] text-zinc-600 font-mono">CODE: L-SOBRE v2.2</span>
-            <button onclick="resetApp()" class="text-[10px] text-zinc-500 hover:text-zinc-300 underline">Retour à l'accueil</button>
-        </footer>
-
-        <!-- ================= MODALS ET BANNIÈRES DE SÉCURITÉ SANS POPUP INTERRUPTIFS ================= -->
-        <!-- Modal de confirmation de purge des données privées -->
-        <div id="purge-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 w-full max-w-xs space-y-4 text-center">
-                <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
-                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </div>
-                <h4 class="text-sm font-black uppercase text-zinc-200">Effacer vos traces ?</h4>
-                <p class="text-xs text-zinc-400 leading-relaxed">
-                    Cette action va définitivement détruire tous vos comptes-rendus enregistrés sur cet appareil.
-                </p>
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                    <button onclick="closePurgeModal()" class="py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-lg text-xs font-bold">Annuler</button>
-                    <button onclick="confirmPurge()" class="py-2.5 bg-rose-600 text-white rounded-lg text-xs font-bold">Tout effacer</button>
-                </div>
+          `;
+        } else {
+          somaticContent = `
+            <div class="space-y-1.5 text-xs border-l-2 border-zinc-850 pl-2">
+              <div>
+                <span class="text-[8.5px] font-mono uppercase text-zinc-500 block leading-tight">Sensation/Emotion</span>
+                <p class="italic text-zinc-300">"${rec.emotionText}"</p>
+              </div>
             </div>
-        </div>
-
-        <!-- Notification temporaire intégrée (Toast) -->
-        <div id="toast" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-medium px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center space-x-2 whitespace-nowrap">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span id="toast-message">Message</span>
-        </div>
-
-    </div>
-
-    <!-- CODE LOGIQUE INTERACTIF -->
-    <script>
-        // Catalogue direct des moyens d'anesthésie et de leur rôle d'évitement
-        const anesthesiants = {
-            porno: {
-                title: "Sexe / Porno",
-                desc: "Masque un grand vide affectif, une solitude soudaine ou une baisse d'énergie vitale en recherchant une décharge de dopamine immédiate."
-            },
-            alcool: {
-                title: "Alcool",
-                desc: "Vise à endormir temporairement le système nerveux pour éteindre le bruit mental, la surcharge ou l'anxiété accumulée."
-            },
-            boulimie: {
-                title: "Coma Alimentaire",
-                desc: "Force le corps à mobiliser toute son énergie sur la digestion lourde pour étouffer une émotion intense (colère, déception)."
-            },
-            sport: {
-                title: "Sport excessif",
-                desc: "Utilise la fatigue corporelle extrême et la chimie de l'effort pour fuir un sentiment d'impuissance et tenter de tout contrôler."
-            },
-            scroll: {
-                title: "Scroll Infini",
-                desc: "Provoque une dissociation visuelle rapide. Surcharge l'esprit d'informations neutres pour éviter l'inactivité ou l'ennui."
-            },
-            travail: {
-                title: "Hyper-travail",
-                desc: "Fuite dans la productivité et la validation externe pour ne pas faire face à l'épuisement émotionnel ou à des manques affectifs."
-            },
-            achats: {
-                title: "Achats Flash",
-                desc: "Procure un sentiment de puissance et de contrôle éphémère pour combler instantanément une frustration ou une tension."
-            },
-            conflit: {
-                title: "Recherche de conflit",
-                desc: "Projette une tension interne accumulée en provoquant une crise extérieure, pour s'en libérer sans avoir à la contenir seul."
-            }
-        };
-
-        // Créer la grille de boutons d'accueil
-        function initGrid() {
-            const grid = document.getElementById('anesth-grid');
-            grid.innerHTML = '';
-            Object.keys(anesthesiants).forEach(key => {
-                grid.innerHTML += `
-                    <button onclick="selectAnesthesiant('${key}')" class="p-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-900 active:border-rose-900 text-zinc-300 rounded-xl text-xs font-semibold text-center transition-all duration-150">
-                        ${anesthesiants[key].title}
-                    </button>
-                `;
-            });
-            renderHistory();
+          `;
         }
 
-        // Clic pour comprendre sans quitter l'écran
-        function selectAnesthesiant(key) {
-            const card = document.getElementById('explanation-card');
-            const title = document.getElementById('explanation-title');
-            const body = document.getElementById('explanation-body');
-            
-            title.innerText = anesthesiants[key].title;
-            body.innerText = anesthesiants[key].desc;
-            
-            card.classList.remove('hidden');
-            card.scrollIntoView({ behavior: 'smooth' });
-        }
+        card.innerHTML = `
+          <div class="flex items-start justify-between">
+            <div class="space-y-0.5">
+              <span class="text-[9px] font-mono text-zinc-500">${date}</span>
+              <h4 class="font-serif italic text-sm text-[#d4af37] leading-tight font-semibold">
+                ${rec.escapisms && rec.escapisms.length > 0 ? rec.escapisms.join(", ") : 'Arrêt de présence autonome'}
+              </h4>
+            </div>
+            <button onclick="deleteRecord('${rec.id}')" class="text-zinc-650 hover:text-red-500 text-[10px] uppercase font-mono tracking-wider focus:outline-none py-1">
+              Effacer
+            </button>
+          </div>
+          
+          ${somaticContent}
+          
+          ${activeAdvices && activeAdvices.length > 0 ? `
+            <div class="text-[10px] leading-relaxed text-zinc-400 space-y-1 bg-zinc-900/10 p-2.5 rounded border border-zinc-950 font-light">
+              <strong class="text-zinc-500 block font-mono text-[9px] uppercase tracking-wide">● Recommandation thérapeutique :</strong>
+              <span class="italic">"${activeAdvices[0].advice}"</span>
+            </div>
+          ` : ''}
+        `;
+        parent.appendChild(card);
+      });
+    }
 
-        function closeExplanation() {
-            document.getElementById('explanation-card').classList.add('hidden');
-        }
+    function deleteRecord(recId) {
+      if (confirm("Supprimer cette séance ?")) {
+        state.history = state.history.filter(r => r.id !== recId);
+        localStorage.setItem('face_soi_vibrations', JSON.stringify(state.history));
+        renderHistory();
+      }
+    }
 
-        // Cycle respiratoire et compte à rebours
-        let timerInterval = null;
-        function startRescue() {
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('section-history').classList.add('hidden');
-            document.getElementById('screen-rescue').classList.remove('hidden');
-
-            let timeLeft = 90;
-            const timerNumber = document.getElementById('timer-number');
-            const breathePrompt = document.getElementById('breathe-prompt');
-            
-            timerNumber.innerText = timeLeft;
-
-            let cycleCount = 0;
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerNumber.innerText = timeLeft;
-
-                cycleCount++;
-                // Synchronisation visuelle de l'instruction respiratoire (cycle de 8s : 4s inspire, 4s expire)
-                if (cycleCount % 8 < 4) {
-                    breathePrompt.innerText = "Inspirez";
-                    breathePrompt.className = "text-[9px] uppercase font-bold text-zinc-400 tracking-widest mt-1";
-                } else {
-                    breathePrompt.innerText = "Expirez";
-                    breathePrompt.className = "text-[9px] uppercase font-bold text-rose-400 tracking-widest mt-1";
-                }
-
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    goToJournal();
-                }
-            }, 1000);
-        }
-
-        // Transition directe et propre vers l'introspection
-        function goToJournal() {
-            document.getElementById('screen-rescue').classList.add('hidden');
-            document.getElementById('screen-journal').classList.remove('hidden');
-        }
-
-        // Enregistrement des notes locales
-        function saveSomaticLog() {
-            const q1 = document.getElementById('somatic-q1').value.trim();
-            const q2 = document.getElementById('somatic-q2').value.trim();
-            const q3 = document.getElementById('somatic-q3').value.trim();
-
-            if (!q1 && !q2 && !q3) {
-                showToast("Veuillez remplir au moins un champ pour valider.");
-                return;
-            }
-
-            const newLog = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
-                q1: q1 || "Rien de particulier",
-                q2: q2 || "Non identifié",
-                q3: q3 || "Non identifié"
-            };
-
-            let logs = JSON.parse(localStorage.getItem('face_soi_logs')) || [];
-            logs.unshift(newLog);
-            localStorage.setItem('face_soi_logs', JSON.stringify(logs));
-
-            // Nettoyer les inputs
-            document.getElementById('somatic-q1').value = '';
-            document.getElementById('somatic-q2').value = '';
-            document.getElementById('somatic-q3').value = '';
-
-            showToast("Face-à-face consigné.");
-            setTimeout(() => {
-                resetApp();
-            }, 1500);
-        }
-
-        // Afficher l'historique privé
-        function renderHistory() {
-            const container = document.getElementById('history-list');
-            const purgeBtn = document.getElementById('btn-purge');
-            container.innerHTML = '';
-            
-            const logs = JSON.parse(localStorage.getItem('face_soi_logs')) || [];
-
-            if (logs.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-6 border border-zinc-900 rounded-xl bg-zinc-950/20">
-                        <p class="text-xs text-zinc-600">Aucun historique. Votre vie privée est protégée.</p>
-                    </div>
-                `;
-                purgeBtn.classList.add('hidden');
-                return;
-            }
-
-            purgeBtn.classList.remove('hidden');
-
-            logs.forEach(log => {
-                container.innerHT
+    function clearAllHistory() {
+      if (confirm("Voulez-vous vraiment purger tout votre historique d'arrêt local ? Cette opération est destructive.")) {
+        state.history = [];
+        localStorage.setItem('face_soi_vibrations', JSON.stringify([]));
+        renderHistory();
+      }
+    }
+  </script>
+</body>
+</html>
