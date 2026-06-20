@@ -1,0 +1,275 @@
+```html
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Face à Soi - Briser l'Anesthésie Émotionnelle</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#09090b',
+                        cardBg: '#18181b',
+                        accentViolet: '#6366f1',
+                        accentRose: '#f43f5e',
+                        accentEmerald: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Des désactivations de sélection et d'effets tactiles pour donner l'effet natif APK */
+        body {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Animation pour le cercle de respiration */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.6); opacity: 1; }
+        }
+        .breathe-circle {
+            animation: breathe 8s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-zinc-100 min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- CONTENEUR D'APPLICATION MOBILE (Simule le comportement d'un téléphone) -->
+    <div class="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between bg-zinc-950 shadow-2xl relative border-x border-zinc-900 pb-20">
+        
+        <!-- HEADER -->
+        <header class="p-4 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-accentViolet animate-pulse"></span>
+                <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent">Face à Soi</h1>
+            </div>
+            <button onclick="openModal('intro-modal')" class="text-zinc-400 hover:text-white transition">
+                <!-- Icon Aide -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- NOTIFICATION TOAST INTERNE (Pas d'alertes navigateur) -->
+        <div id="toast" class="fixed top-16 left-1/2 transform -translate-x-1/2 bg-zinc-900 border border-zinc-800 text-zinc-200 px-4 py-2 rounded-xl text-sm opacity-0 pointer-events-none transition-all duration-300 z-50 shadow-xl flex items-center gap-2">
+            <span id="toast-icon" class="text-accentViolet">●</span>
+            <span id="toast-text">Message</span>
+        </div>
+
+        <!-- ZONE DE CONTENU PRINCIPAL -->
+        <main class="flex-1 p-4 overflow-y-auto no-scrollbar">
+            
+            <!-- ÉCRAN 1 : ACCUEIL -->
+            <section id="screen-accueil" class="space-y-6">
+                <!-- Zone Alerte Urgence immédiate -->
+                <div class="bg-gradient-to-br from-zinc-900 to-zinc-950 p-5 rounded-2xl border border-zinc-800 text-center space-y-4">
+                    <span class="text-xs font-semibold uppercase tracking-widest text-accentRose bg-accentRose/10 px-3 py-1 rounded-full">Besoin d'anesthésier immédiat ?</span>
+                    <h2 class="text-xl font-bold">Une pulsion de fuite est là ?</h2>
+                    <p class="text-zinc-400 text-sm">Avant de céder à l'anesthésiant, accordez-vous simplement 90 secondes de respiration. C'est tout ce qu'on vous demande.</p>
+                    <button onclick="startSomaticRescue()" class="w-full py-4 bg-accentRose hover:bg-rose-600 active:scale-95 transition-all text-white font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg shadow-rose-950/40">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 animate-bounce">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                        </svg>
+                        Lancer l'Arrêt d'Urgence (90s)
+                    </button>
+                </div>
+
+                <!-- Mes Masques d'Échappement Actuels -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-sm font-semibold text-zinc-400 tracking-wider uppercase">Mes Anesthésiants Actifs</h3>
+                        <button onclick="navigateTo('screen-catalogue')" class="text-xs text-accentViolet hover:underline">Modifier</button>
+                    </div>
+                    
+                    <div id="active-masks-list" class="grid grid-cols-2 gap-3">
+                        <!-- Généré en JS -->
+                        <div class="col-span-2 text-center p-6 border border-dashed border-zinc-800 rounded-xl text-zinc-500 text-xs">
+                            Aucun anesthésiant sélectionné pour le moment. Allez sur le Catalogue pour les cibler sans tabou.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Transgénérationnelle / Citation de fond -->
+                <div class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 text-xs text-zinc-500 italic">
+                    "Identifier sans détours ce qui nous endort, c'est décider de briser le cycle pour ceux qui nous suivent."
+                </div>
+
+                <!-- Statistiques Rapides -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+                        <span class="text-2xl font-bold text-accentEmerald" id="stat-saved">0</span>
+                        <p class="text-[11px] text-zinc-400 mt-1">Évitements conscientisés</p>
+                    </div>
+                    <div class="bg-zinc-900 p-4 rounded-xl border border-zinc-800">
+                        <span class="text-2xl font-bold text-accentViolet" id="stat-sessions">0</span>
+                        <p class="text-[11px] text-zinc-400 mt-1">Explorations faites</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÉCRAN 2 : CATALOGUE SANS TABOU -->
+            <section id="screen-catalogue" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <h2 class="text-xl font-bold">La Carte des Ombres</h2>
+                    <p class="text-zinc-400 text-xs">Cochez les moyens que vous utilisez pour vous engourdir la conscience. Pas de morale ici. Plus vous êtes cru, plus vous reprenez le contrôle.</p>
+                </div>
+
+                <!-- Filtres Catégories -->
+                <div class="flex gap-1 overflow-x-auto no-scrollbar py-1 border-b border-zinc-900">
+                    <button onclick="filterCatalog('all')" id="cat-all" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-accentViolet text-white shrink-0">Tout</button>
+                    <button onclick="filterCatalog('corps')" id="cat-corps" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-900 text-zinc-400 hover:text-zinc-200 shrink-0">Corps & Chimie</button>
+                    <button onclick="filterCatalog('adrenaline')" id="cat-adrenaline" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-900 text-zinc-400 hover:text-zinc-200 shrink-0">Adrénaline & Violence</button>
+                    <button onclick="filterCatalog('social')" id="cat-social" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-900 text-zinc-400 hover:text-zinc-200 shrink-0">Social & Finances</button>
+                    <button onclick="filterCatalog('virtuel')" id="cat-virtuel" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-zinc-900 text-zinc-400 hover:text-zinc-200 shrink-0">Virtuel & Vertueux</button>
+                </div>
+
+                <!-- Liste des Anesthésiants Bruts -->
+                <div id="catalog-list" class="space-y-3">
+                    <!-- Rempli dynamiquement en JS -->
+                </div>
+            </section>
+
+            <!-- ÉCRAN 3 : AUDIT / INVESTIGATION -->
+            <section id="screen-audit" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <h2 class="text-xl font-bold">L'Enquêteur d'Inconfort</h2>
+                    <p class="text-zinc-400 text-xs">Un outil d'investigation rapide pour débusquer les fuites invisibles au fil de votre journée.</p>
+                </div>
+
+                <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 space-y-4" id="audit-flow">
+                    <!-- Rempli en JS par étapes d'investigation -->
+                    <div id="audit-step-content" class="space-y-4">
+                        <!-- Rendu par JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÉCRAN 4 : ESPACE BREATH (RESCUE 90S) -->
+            <section id="screen-rescue" class="space-y-6 hidden flex flex-col justify-center items-center min-h-[60vh]">
+                <div class="text-center space-y-2">
+                    <span class="text-xs uppercase tracking-widest text-accentRose font-bold">Surfer la Vague</span>
+                    <h2 class="text-2xl font-bold" id="rescue-instruction">Préparez-vous à inspirer...</h2>
+                </div>
+
+                <!-- Cercle d'Ancrage Corporel Dynamique -->
+                <div class="relative w-48 h-48 flex items-center justify-center my-8">
+                    <div class="absolute inset-0 bg-accentRose/10 rounded-full animate-ping" style="animation-duration: 4s;"></div>
+                    <div id="breathe-ring" class="w-36 h-36 bg-gradient-to-tr from-rose-500 to-accentViolet rounded-full breathe-circle flex items-center justify-center shadow-lg shadow-rose-950/50">
+                        <span class="text-3xl font-black text-white" id="rescue-timer">90</span>
+                    </div>
+                </div>
+
+                <div class="w-full text-center max-w-xs space-y-4">
+                    <p class="text-xs text-zinc-400" id="somatic-hint">Concentrez-vous sur le point de contact de vos pieds sur le sol. L'inconfort émotionnel ne dure biologiquement que 90 secondes s'il n'est pas alimenté.</p>
+                    
+                    <button onclick="abortSomaticRescue()" class="px-4 py-2 border border-zinc-800 rounded-lg text-xs text-zinc-500 hover:text-white transition">
+                        Je n'y arrive pas, abandonner
+                    </button>
+                </div>
+            </section>
+
+            <!-- ÉCRAN 5 : JOURNAL D'EXPLORATION -->
+            <section id="screen-journal" class="space-y-4 hidden">
+                <div class="space-y-1">
+                    <h2 class="text-xl font-bold">Qu'est-ce qui se cachait derrière ?</h2>
+                    <p class="text-zinc-400 text-xs">La pulsion retombe doucement. C'est le moment d'aller regarder, sans détour et avec courage, le monstre que vous vouliez anesthésier.</p>
+                </div>
+
+                <div class="bg-zinc-900 p-5 rounded-2xl border border-zinc-800 space-y-4">
+                    <!-- Étape 1 : Identifier la racine -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-zinc-300">Quelle était l'émotion / l'état brut sous-jacent ?</label>
+                        <div class="grid grid-cols-2 gap-2" id="emotion-selector">
+                            <button onclick="selectEmotion('Vide / Ennui')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">🕳️ Vide / Ennui</button>
+                            <button onclick="selectEmotion('Colère / Rage')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">🔥 Colère / Rage</button>
+                            <button onclick="selectEmotion('Tristesse / Deuil')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">💧 Tristesse / Deuil</button>
+                            <button onclick="selectEmotion('Anxiété / Peur')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">🌪️ Anxiété / Peur</button>
+                            <button onclick="selectEmotion('Honte / Culpabilité')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">🛡️ Honte / Culpabilité</button>
+                            <button onclick="selectEmotion('Épuisement total')" class="emotion-btn p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-left hover:border-accentViolet transition">🪫 Épuisement total</button>
+                        </div>
+                    </div>
+
+                    <!-- Étape 2 : Écriture brute et thérapeutique -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-zinc-300">Écriture Brute (Videz votre tête sans filtre)</label>
+                        <textarea id="journal-text" rows="4" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm focus:outline-none focus:border-accentViolet text-zinc-200 placeholder-zinc-600" placeholder="Ex: J'ai eu envie d'aller boire un verre tout de suite parce que mon patron m'a envoyé ce message et que je me suis senti nul..."></textarea>
+                    </div>
+
+                    <button onclick="saveJournalEntry()" class="w-full py-3 bg-accentViolet hover:bg-indigo-600 active:scale-95 transition-all text-white font-semibold rounded-xl text-sm">
+                        Enregistrer cette exploration dans mon histoire
+                    </button>
+                </div>
+            </section>
+
+            <!-- ÉCRAN 6 : ARCHIVES & CONNAISSANCE -->
+            <section id="screen-archives" class="space-y-4 hidden">
+                <div class="space-y-1 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-xl font-bold">Mon Face-à-Face</h2>
+                        <p class="text-zinc-400 text-xs">Vos victoires de lucidité consignées. Vos ombres reculent quand elles sont exposées au jour.</p>
+                    </div>
+                    <button onclick="clearAllData()" class="text-[10px] text-zinc-600 hover:text-accentRose transition border border-zinc-900 rounded px-2 py-1">Tout effacer</button>
+                </div>
+
+                <div id="journal-history" class="space-y-3">
+                    <!-- Rendu dynamique JS -->
+                    <div class="text-center p-8 border border-zinc-900 rounded-xl text-zinc-500 text-xs">
+                        Aucun face-à-face enregistré. Prenez 90s pour vous arrêter la prochaine fois que vous sentez l'appel d'une fuite !
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- NAVIGATION INTERNE (Façon application mobile native) -->
+        <nav class="absolute bottom-0 inset-x-0 bg-zinc-950 border-t border-zinc-900 h-16 flex items-center justify-around z-50">
+            <button onclick="navigateTo('screen-accueil')" id="nav-screen-accueil" class="flex flex-col items-center gap-1 text-accentViolet">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                </svg>
+                <span class="text-[10px]">Accueil</span>
+            </button>
+            <button onclick="navigateTo('screen-catalogue')" id="nav-screen-catalogue" class="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75c.621 0 1.125.504 1.125 1.125v1.125c0 .621-.504 1.125-1.125 1.125H5.625a1.125 1.125 0 0 1-1.125-1.125V5.625c0-.621.504-1.125 1.125-1.125Z" />
+                </svg>
+                <span class="text-[10px]">Catalogue</span>
+            </button>
+            <button onclick="navigateTo('screen-audit')" id="nav-screen-audit" class="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-3-3V18m-3-3V18m3-12h.008v.008H12V6Zm0 3h.008v.008H12V9Zm0 3h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm0-3h.008v.008H7.5v-.008Zm0-3h.008v.008H7.5V9Zm0-3h.008v.008H7.5V6Zm9 0h.008v.008h-.008V6Zm0 3h.008v.008h-.008V9Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008V17.25ZM9 17.25h.008v.008H9v-.008ZM2.25 21h19.5a2.25 2.25 0 0 0 2.25-2.25V5.25A2.25 2.25 0 0 0 21.75 3H2.25A2.25 2.25 0 0 0 0 5.25v13.5A2.25 2.25 0 0 0 2.25 21Z" />
+                </svg>
+                <span class="text-[10px]">Enquêteur</span>
+            </button>
+            <button onclick="navigateTo('screen-archives')" id="nav-screen-archives" class="flex flex-col items-center gap-1 text-zinc-500 hover:text-zinc-300">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+                <span class="text-[10px]">Face-à-Face</span>
+            </button>
+        </nav>
+
+        <!-- MODAL D'INFORMATION THERAPEUTIQUE -->
+        <div id="intro-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-zinc-900 border border-zinc-800 rounded-3xl max-w-sm w-full p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold">Pourquoi "Face à Soi" ?</h3>
+                    <button onclick="closeModal('intro-modal')" class="text-zinc-500 hover:text-white">✕</button>
+                </div>
+                <div class="space-y
