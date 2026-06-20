@@ -1,0 +1,382 @@
+```html
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Face à Soi — Clarté Somatique</title>
+    <!-- Tailwind CSS pour l'affichage rapide et pro -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#000000',
+                        cardBg: '#09090b',
+                        borderBg: '#1f2937',
+                        accentRose: '#f43f5e',
+                        accentIndigo: '#6366f1'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #000000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        /* Animation du guide respiratoire (4s d'inspiration / 4s d'expiration) */
+        @keyframes breathe {
+            0%, 100% {
+                transform: scale(0.95);
+                background-color: rgba(244, 63, 94, 0.1);
+                box-shadow: 0 0 15px rgba(244, 63, 94, 0.05);
+            }
+            50% {
+                transform: scale(1.35);
+                background-color: rgba(244, 63, 94, 0.35);
+                box-shadow: 0 0 35px rgba(244, 63, 94, 0.25);
+            }
+        }
+        .breathe-ring {
+            animation: breathe 8s infinite ease-in-out;
+        }
+        /* Style personnalisé pour les zones de texte sur mobile pour éviter les zooms automatiques */
+        textarea {
+            font-size: 16px !important; /* Force la taille minimale de police sous iOS/Android pour bloquer le zoom */
+        }
+    </style>
+</head>
+<body class="text-zinc-100 min-h-screen flex items-center justify-center bg-black">
+
+    <!-- CONTENEUR PRINCIPAL DU SIMULATEUR DE SMARTPHONE -->
+    <div class="w-full max-w-md min-h-screen md:min-h-[820px] md:my-6 md:rounded-3xl md:border md:border-zinc-800 bg-black flex flex-col justify-between shadow-2xl overflow-hidden relative">
+        
+        <!-- EN-TÊTE -->
+        <header class="p-5 border-b border-zinc-900 bg-zinc-950 flex justify-between items-center z-10">
+            <div class="flex items-center space-x-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                <h1 class="text-base font-black tracking-wider uppercase text-zinc-200">Face à Soi</h1>
+            </div>
+            <span class="text-[10px] bg-zinc-900 text-zinc-400 px-2 py-0.5 rounded font-mono">REGULATION</span>
+        </header>
+
+        <!-- ZONE DE CONTENU PRINCIPAL DYNAMIQUE -->
+        <main class="flex-1 p-5 overflow-y-auto space-y-6">
+
+            <!-- ================= ÉCRAN 1 : ACCUEIL ================= -->
+            <section id="screen-home" class="space-y-6">
+                <!-- Bouton de crise principal -->
+                <div class="bg-zinc-950 border border-zinc-900 rounded-2xl p-6 text-center space-y-4">
+                    <h2 class="text-lg font-bold text-zinc-100">Pulsion d'évitement active ?</h2>
+                    <p class="text-zinc-400 text-xs leading-relaxed max-w-xs mx-auto">
+                        Offrez à votre système nerveux un sas de décompression de 90 secondes avant d'agir.
+                    </p>
+                    <button onclick="startRescue()" class="w-full py-4.5 bg-rose-600 active:bg-rose-700 text-white rounded-xl font-extrabold text-lg transition duration-150 transform active:scale-95 shadow-lg shadow-rose-950/40">
+                        Lancer l'arrêt (90s)
+                    </button>
+                </div>
+
+                <!-- Grille des anesthésiants sans curseurs -->
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Moyens anesthésiants</h3>
+                        <span class="text-[10px] text-zinc-600 italic">Cliquez pour comprendre</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-2" id="anesth-grid">
+                        <!-- Généré en JavaScript pour plus de clarté -->
+                    </div>
+
+                    <!-- Fiche explicative d'évitement neuro-somatique -->
+                    <div id="explanation-card" class="hidden bg-zinc-950 border border-rose-900/30 p-4 rounded-xl transition-all duration-300">
+                        <div class="flex justify-between items-start mb-1.5">
+                            <span id="explanation-title" class="text-xs font-black uppercase tracking-wider text-rose-400">Titre</span>
+                            <button onclick="closeExplanation()" class="text-zinc-500 hover:text-zinc-300 text-lg font-bold leading-none">&times;</button>
+                        </div>
+                        <p id="explanation-body" class="text-xs text-zinc-300 leading-relaxed"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= ÉCRAN 2 : CHRONOMÈTRE DE 90 SECONDES ================= -->
+            <section id="screen-rescue" class="hidden flex flex-col items-center justify-center py-8 space-y-8 text-center">
+                <div class="space-y-2">
+                    <h2 class="text-lg font-bold text-zinc-200">Surfez la vague d'adrénaline</h2>
+                    <p class="text-xs text-zinc-500 max-w-xs leading-relaxed">
+                        Physiologiquement, l'impulsion dure 90 secondes. Ancrez-vous et laissez le pic émotionnel s'éteindre.
+                    </p>
+                </div>
+
+                <!-- Onde respiratoire centrale -->
+                <div class="relative w-48 h-48 flex items-center justify-center">
+                    <div class="absolute w-32 h-32 rounded-full breathe-ring"></div>
+                    <div class="relative z-10 flex flex-col items-center">
+                        <span id="timer-number" class="text-5xl font-black text-rose-500 tracking-tighter">90</span>
+                        <span id="breathe-prompt" class="text-[9px] uppercase font-bold text-zinc-400 tracking-widest mt-1">Inspirez</span>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-950 border border-zinc-900 p-4 rounded-xl max-w-xs">
+                    <p class="text-xs text-zinc-400 italic">
+                        "Relâchez la mâchoire et les épaules. Suivez simplement le mouvement du cercle."
+                    </p>
+                </div>
+            </section>
+
+            <!-- ================= ÉCRAN 3 : JOURNAL SOMATIQUE ================= -->
+            <section id="screen-journal" class="hidden space-y-5">
+                <div class="border-b border-zinc-900 pb-2">
+                    <h2 class="text-lg font-bold text-zinc-100">Le calme est revenu.</h2>
+                    <p class="text-xs text-rose-500 font-medium">Votre corps a passé le pic de stress. Consignez la vérité.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                            1. Quelle sensation physique essayais-tu de fuir ?
+                        </label>
+                        <textarea id="somatic-q1" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Gorge serrée, boule au ventre, envie de fuite, vide physique..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                            2. Quelle était l'émotion réelle cachée dessous ?
+                        </label>
+                        <textarea id="somatic-q2" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Colère étouffée, solitude, peur de l'échec, fatigue excessive..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-zinc-500 mb-1">
+                            3. De quoi ton corps a-t-il besoin maintenant ?
+                        </label>
+                        <textarea id="somatic-q3" class="w-full h-16 bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-200 focus:outline-none focus:border-rose-500 transition-colors" placeholder="Se reposer, s'isoler, s'étirer, boire un verre d'eau..."></textarea>
+                    </div>
+
+                    <button onclick="saveSomaticLog()" class="w-full py-3.5 bg-indigo-600 active:bg-indigo-700 text-white rounded-xl font-bold text-sm transition duration-150 transform active:scale-95 shadow-md shadow-indigo-950/50">
+                        Consigner l'intégration
+                    </button>
+                </div>
+            </section>
+
+            <!-- ================= HISTORIQUE LOCAL ET SÉCURISÉ ================= -->
+            <section id="section-history" class="space-y-3 pt-4 border-t border-zinc-900">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-zinc-500">Journal d'intégration</h3>
+                    <button id="btn-purge" onclick="triggerPurgeModal()" class="text-[10px] text-zinc-600 hover:text-red-400 transition-colors hidden">
+                        Tout effacer
+                    </button>
+                </div>
+                
+                <div id="history-list" class="space-y-3">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER SIMPLE -->
+        <footer class="p-4 bg-zinc-950 border-t border-zinc-900 text-center flex justify-between items-center z-10">
+            <span class="text-[10px] text-zinc-600 font-mono">CODE: L-SOBRE v2.2</span>
+            <button onclick="resetApp()" class="text-[10px] text-zinc-500 hover:text-zinc-300 underline">Retour à l'accueil</button>
+        </footer>
+
+        <!-- ================= MODALS ET BANNIÈRES DE SÉCURITÉ SANS POPUP INTERRUPTIFS ================= -->
+        <!-- Modal de confirmation de purge des données privées -->
+        <div id="purge-modal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+            <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-6 w-full max-w-xs space-y-4 text-center">
+                <div class="w-12 h-12 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                </div>
+                <h4 class="text-sm font-black uppercase text-zinc-200">Effacer vos traces ?</h4>
+                <p class="text-xs text-zinc-400 leading-relaxed">
+                    Cette action va définitivement détruire tous vos comptes-rendus enregistrés sur cet appareil.
+                </p>
+                <div class="grid grid-cols-2 gap-2 pt-2">
+                    <button onclick="closePurgeModal()" class="py-2.5 bg-zinc-900 border border-zinc-800 text-zinc-400 rounded-lg text-xs font-bold">Annuler</button>
+                    <button onclick="confirmPurge()" class="py-2.5 bg-rose-600 text-white rounded-lg text-xs font-bold">Tout effacer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification temporaire intégrée (Toast) -->
+        <div id="toast" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-medium px-4 py-3 rounded-xl shadow-2xl z-50 flex items-center space-x-2 whitespace-nowrap">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span id="toast-message">Message</span>
+        </div>
+
+    </div>
+
+    <!-- CODE LOGIQUE INTERACTIF -->
+    <script>
+        // Catalogue direct des moyens d'anesthésie et de leur rôle d'évitement
+        const anesthesiants = {
+            porno: {
+                title: "Sexe / Porno",
+                desc: "Masque un grand vide affectif, une solitude soudaine ou une baisse d'énergie vitale en recherchant une décharge de dopamine immédiate."
+            },
+            alcool: {
+                title: "Alcool",
+                desc: "Vise à endormir temporairement le système nerveux pour éteindre le bruit mental, la surcharge ou l'anxiété accumulée."
+            },
+            boulimie: {
+                title: "Coma Alimentaire",
+                desc: "Force le corps à mobiliser toute son énergie sur la digestion lourde pour étouffer une émotion intense (colère, déception)."
+            },
+            sport: {
+                title: "Sport excessif",
+                desc: "Utilise la fatigue corporelle extrême et la chimie de l'effort pour fuir un sentiment d'impuissance et tenter de tout contrôler."
+            },
+            scroll: {
+                title: "Scroll Infini",
+                desc: "Provoque une dissociation visuelle rapide. Surcharge l'esprit d'informations neutres pour éviter l'inactivité ou l'ennui."
+            },
+            travail: {
+                title: "Hyper-travail",
+                desc: "Fuite dans la productivité et la validation externe pour ne pas faire face à l'épuisement émotionnel ou à des manques affectifs."
+            },
+            achats: {
+                title: "Achats Flash",
+                desc: "Procure un sentiment de puissance et de contrôle éphémère pour combler instantanément une frustration ou une tension."
+            },
+            conflit: {
+                title: "Recherche de conflit",
+                desc: "Projette une tension interne accumulée en provoquant une crise extérieure, pour s'en libérer sans avoir à la contenir seul."
+            }
+        };
+
+        // Créer la grille de boutons d'accueil
+        function initGrid() {
+            const grid = document.getElementById('anesth-grid');
+            grid.innerHTML = '';
+            Object.keys(anesthesiants).forEach(key => {
+                grid.innerHTML += `
+                    <button onclick="selectAnesthesiant('${key}')" class="p-3 bg-zinc-950 hover:bg-zinc-900 border border-zinc-900 active:border-rose-900 text-zinc-300 rounded-xl text-xs font-semibold text-center transition-all duration-150">
+                        ${anesthesiants[key].title}
+                    </button>
+                `;
+            });
+            renderHistory();
+        }
+
+        // Clic pour comprendre sans quitter l'écran
+        function selectAnesthesiant(key) {
+            const card = document.getElementById('explanation-card');
+            const title = document.getElementById('explanation-title');
+            const body = document.getElementById('explanation-body');
+            
+            title.innerText = anesthesiants[key].title;
+            body.innerText = anesthesiants[key].desc;
+            
+            card.classList.remove('hidden');
+            card.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeExplanation() {
+            document.getElementById('explanation-card').classList.add('hidden');
+        }
+
+        // Cycle respiratoire et compte à rebours
+        let timerInterval = null;
+        function startRescue() {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('section-history').classList.add('hidden');
+            document.getElementById('screen-rescue').classList.remove('hidden');
+
+            let timeLeft = 90;
+            const timerNumber = document.getElementById('timer-number');
+            const breathePrompt = document.getElementById('breathe-prompt');
+            
+            timerNumber.innerText = timeLeft;
+
+            let cycleCount = 0;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerNumber.innerText = timeLeft;
+
+                cycleCount++;
+                // Synchronisation visuelle de l'instruction respiratoire (cycle de 8s : 4s inspire, 4s expire)
+                if (cycleCount % 8 < 4) {
+                    breathePrompt.innerText = "Inspirez";
+                    breathePrompt.className = "text-[9px] uppercase font-bold text-zinc-400 tracking-widest mt-1";
+                } else {
+                    breathePrompt.innerText = "Expirez";
+                    breathePrompt.className = "text-[9px] uppercase font-bold text-rose-400 tracking-widest mt-1";
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    goToJournal();
+                }
+            }, 1000);
+        }
+
+        // Transition directe et propre vers l'introspection
+        function goToJournal() {
+            document.getElementById('screen-rescue').classList.add('hidden');
+            document.getElementById('screen-journal').classList.remove('hidden');
+        }
+
+        // Enregistrement des notes locales
+        function saveSomaticLog() {
+            const q1 = document.getElementById('somatic-q1').value.trim();
+            const q2 = document.getElementById('somatic-q2').value.trim();
+            const q3 = document.getElementById('somatic-q3').value.trim();
+
+            if (!q1 && !q2 && !q3) {
+                showToast("Veuillez remplir au moins un champ pour valider.");
+                return;
+            }
+
+            const newLog = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                q1: q1 || "Rien de particulier",
+                q2: q2 || "Non identifié",
+                q3: q3 || "Non identifié"
+            };
+
+            let logs = JSON.parse(localStorage.getItem('face_soi_logs')) || [];
+            logs.unshift(newLog);
+            localStorage.setItem('face_soi_logs', JSON.stringify(logs));
+
+            // Nettoyer les inputs
+            document.getElementById('somatic-q1').value = '';
+            document.getElementById('somatic-q2').value = '';
+            document.getElementById('somatic-q3').value = '';
+
+            showToast("Face-à-face consigné.");
+            setTimeout(() => {
+                resetApp();
+            }, 1500);
+        }
+
+        // Afficher l'historique privé
+        function renderHistory() {
+            const container = document.getElementById('history-list');
+            const purgeBtn = document.getElementById('btn-purge');
+            container.innerHTML = '';
+            
+            const logs = JSON.parse(localStorage.getItem('face_soi_logs')) || [];
+
+            if (logs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 border border-zinc-900 rounded-xl bg-zinc-950/20">
+                        <p class="text-xs text-zinc-600">Aucun historique. Votre vie privée est protégée.</p>
+                    </div>
+                `;
+                purgeBtn.classList.add('hidden');
+                return;
+            }
+
+            purgeBtn.classList.remove('hidden');
+
+            logs.forEach(log => {
+                container.innerHT
